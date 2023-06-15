@@ -1,0 +1,31 @@
+name: Test with Docker Compose
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build and run Docker containers
+      run: |
+        docker-compose up -d
+        docker ps -a
+
+    - name: Wait for containers to start
+      run: |
+        sleep 10
+
+    - name: Run curl tests
+      run: |
+        ./test.sh
+
+    - name: Stop Docker containers
+      run: |
+        docker-compose down
