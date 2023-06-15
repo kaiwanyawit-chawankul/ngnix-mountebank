@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  mountebank:
+    image: docker.io/bbyars/mountebank:latest
+    # ports:
+    #   - "2525:2525"
+    #   - "8080:8080"
+    volumes:
+      - ./imposters:/imposters
+    # command: ["start", "--configfile", "/imposters/proxy-to-realserver.json"]
+    command: ["start", "--configfile", "/imposters/response.json"]
+  nginx:
+    image: nginx
+    ports:
+      - '8001:80'  # Expose Nginx on port 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - mountebank
